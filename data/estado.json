@@ -1,5 +1,11 @@
 {
   "avisado": false,
-  "ultima_revision": "2026-10-23 23:35:32 UTC",
-  "productos_detectados": []
+  "ultima_revision": "2026-10-23T23:40:11.953254+00:00",
+  "estado": "no disponible",
+  "historial": [
+    {
+      "fecha": "2026-10-23T23:40:11.953254+00:00",
+      "resultado": "Revisión completada: 0 productos encontrados. El calendario aún no sale a la venta."
+    }
+  ]
 }

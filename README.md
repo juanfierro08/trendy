@@ -1,41 +1,56 @@
-# 🎯 Trendy Radar (GitHub Actions)
+# 🎯 Trendy Radar
 
-Monitor automatizado y 100% gratuito que se ejecuta en **GitHub Actions** cada 10 minutos para detectar cuándo sale a la venta el **Calendario de Adviento** en la tienda [Trendy Shop](https://www.maquillajetrendyshop.com) (VTEX).
+Monitor automatizado y 100% gratuito que se ejecuta en **GitHub Actions** cada 10 minutos para detectar la salida del **Calendario de Adviento** en la tienda [Trendy Shop](https://www.maquillajetrendyshop.com) (VTEX).
 
-Cuando el producto aparece en el catálogo, envía una alerta inmediata a tu correo electrónico vía Gmail SMTP y guarda el estado en `data/estado.json` para **no enviar correos repetidos**.
+Cuenta con un panel de estado visual público servido a través de **GitHub Pages**:
+👉 **[https://juanfierro08.github.io/trendy/](https://juanfierro08.github.io/trendy/)**
 
 ---
 
-## 🔑 1. Configurar Secrets en GitHub
+## 🔑 1. Configurar los 3 Secrets en GitHub
 
-Para que GitHub Actions pueda enviarte correos con tu cuenta de Gmail:
+Para recibir la alerta por correo cuando aparezca el producto:
 
-1. Ve a tu repositorio en GitHub.
-2. Haz clic en **Settings** > **Secrets and variables** > **Actions**.
-3. Haz clic en **New repository secret** y añade los siguientes 3 secretos:
+1. Ve a tu repositorio en GitHub: [https://github.com/juanfierro08/trendy](https://github.com/juanfierro08/trendy)
+2. Entra a **Settings** > **Secrets and variables** > **Actions**.
+3. Haz clic en **New repository secret** y crea estos 3 secretos:
 
-| Secret | Valor |
+| Secret | Descripción |
 | :--- | :--- |
-| `GMAIL_USER` | Tu dirección de Gmail (ej: `tu_correo@gmail.com`). |
-| `GMAIL_APP_PASSWORD` | Tu contraseña de aplicación de Google de 16 caracteres (generada en tu cuenta de Google con verificación en dos pasos). |
-| `ALERT_RECIPIENT_EMAIL` | El correo donde quieres recibir la alerta (puede ser el mismo `GMAIL_USER`). |
+| `GMAIL_USER` | Tu correo de Gmail remitente (ej: `tu_correo@gmail.com`). |
+| `GMAIL_APP_PASSWORD` | Tu contraseña de aplicación de Google de 16 caracteres (sin espacios). |
+| `ALERT_RECIPIENT_EMAIL` | Correo donde recibirás la notificación (puede ser el mismo `GMAIL_USER`). |
 
 ---
 
-## 🚀 2. Cómo Probar o Lanzar una Ejecución Manual
+## 🌐 2. Activar GitHub Pages (Panel Web Público)
 
-No tienes que esperar los 10 minutos para comprobar que funcione:
+Para que tu página de estado en vivo funcione:
 
-1. En tu repositorio de GitHub, entra a la pestaña **Actions**.
+1. En tu repositorio, entra a **Settings** > **Pages**.
+2. En **Build and deployment** > **Source**, elige **Deploy from a branch**.
+3. En **Branch**, selecciona `main` y en la carpeta elige `/docs`.
+4. Haz clic en **Save**.
+
+En 1 o 2 minutos tu dashboard estará visible en:
+👉 `https://juanfierro08.github.io/trendy/`
+
+---
+
+## 🚀 3. Lanzar una Ejecución Manual
+
+Puedes disparar una verificación en cualquier momento sin esperar al cron de 10 minutos:
+
+1. En el repositorio, entra a la pestaña **Actions**.
 2. En la barra lateral izquierda, selecciona el workflow **Trendy Radar Sentinel**.
-3. Haz clic en el botón desplegable **Run workflow** y presiona el botón verde **Run workflow**.
-4. Haz clic en la ejecución iniciada para ver los logs en tiempo real (`[Consulta] Buscando término: 'adviento'...`).
+3. Haz clic en el botón desplegable **Run workflow** > botón verde **Run workflow**.
+4. Puedes abrir la ejecución para revisar el registro en tiempo real.
 
 ---
 
-## ⏱️ 3. Funcionamiento Automático
+## ⚙️ Funcionamiento Automático
 
-* El workflow corre solo cada **10 minutos** (`cron: "*/10 * * * *"`).
-* Si el producto aún no está en tienda, el chequeo dura menos de 10 segundos y termina.
-* En el instante en que VTEX publique el producto, recibirás un correo de alta prioridad con el enlace directo para comprarlo.
-* El archivo `data/estado.json` se actualizará automáticamente a `avisado: true` en el repositorio para no volver a enviar correos.
+* **Frecuencia:** Se ejecuta cada 10 minutos (`cron: "*/10 * * * *"`).
+* **Detección:** Si el calendario aún no está en tienda, registra el chequeo en `data/estado.json` y termina.
+* **Alerta:** En el instante en que VTEX publique el producto, envía el correo con la ficha y enlace directo de compra, y marca `avisado: true` para nunca enviar correos duplicados.
+* **Historial:** Mantiene las últimas 50 revisiones visibles tanto en `data/estado.json` como en el dashboard de GitHub Pages con hora de Colombia (`America/Bogota`).

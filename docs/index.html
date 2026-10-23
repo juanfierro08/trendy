@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trendy Radar • Estado del Calendario de Adviento</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220%22%20%220%22%20%22100%22%20%22100%22><text y=%22.9em%22 font-size=%2290%22>🎯</text></svg>">
+
+    <style>
+        :root {
+            --bg-base: #07090e;
+            --bg-surface: #0e1424;
+            --bg-surface-elevated: #141d33;
+            --card-border: rgba(255, 255, 255, 0.08);
+            
+            --trendy-pink: #ec4899;
+            --trendy-gradient: linear-gradient(135deg, #ec4899 0%, #a855f7 50%, #6366f1 100%);
+            
+            --emerald: #10b981;
+            --emerald-bg: rgba(16, 185, 129, 0.12);
+            --emerald-border: rgba(16, 185, 129, 0.4);
+            
+            --amber: #f59e0b;
+            --amber-bg: rgba(245, 158, 11, 0.12);
+            --amber-border: rgba(245, 158, 11, 0.4);
+            
+            --rose: #f43f5e;
+            --rose-bg: rgba(244, 63, 94, 0.12);
+            --rose-border: rgba(244, 63, 94, 0.4);
+
+            --cyan: #06b6d4;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            
+            --font-main: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-mono: 'JetBrains Mono', Consolas, monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            font-family: var(--font-main);
+            min-height: 100vh;
+            line-height: 1.5;
+            position: relative;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .font-mono {
+            font-family: var(--font-mono);
+        }
+
+        /* Ambient Glow & Grid */
+        .ambient-glow {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(120px);
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.35;
+        }
+        .glow-1 {
+            width: 450px;
+            height: 450px;
+            background: radial-gradient(circle, rgba(236, 72, 153, 0.3) 0%, transparent 70%);
+            top: -100px;
+            left: 10%;
+        }
+        .glow-2 {
+            width: 550px;
+            height: 550px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.25) 0%, transparent 70%);
+            bottom: -150px;
+            right: 5%;
+        }
+        .grid-overlay {
+            position: fixed;
+            inset: 0;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            background-size: 36px 36px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Container */
+        .app-container {
+            position: relative;
+            z-index: 1;
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 24px 16px 48px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Glass Cards */
+        .glass-card {
+            background: rgba(14, 20, 36, 0.78);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 24px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .radar-badge {
+            position: relative;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(236, 72, 153, 0.15);
+            border: 1px solid var(--trendy-pink);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .radar-point {
+            width: 8px;
+            height: 8px;
+            background: var(--trendy-pink);
+            border-radius: 50%;
+            box-shadow: 0 0 12px var(--trendy-pink);
+        }
+        .radar-pulse {
+            position: absolute;
+            inset: -4px;
+            border: 2px solid var(--trendy-pink);
+            border-radius: 50%;
+            animation: ringPulse 2s infinite ease-out;
+        }
+        @keyframes ringPulse {
+            0% { transform: scale(0.6); opacity: 1; }
+            100% { transform: scale(1.6); opacity: 0; }
+        }
+
+        .brand-title {
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            line-height: 1.1;
+        }
+        .gradient-text {
+            background: var(--trendy-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .brand-sub {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .live-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 12px;
+            border-radius: 9999px;
+            background: rgba(16, 185, 129, 0.12);
+            border: 1px solid rgba(16, 185, 129, 0.35);
+            color: #34d399;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.8px;
+        }
+        .live-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #34d399;
+            animation: blink 1.2s infinite ease-in-out;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .refresh-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--card-border);
+            color: var(--text-secondary);
+            padding: 7px 14px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            font-family: var(--font-main);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .refresh-btn:hover {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Big Status Card */
+        .status-hero {
+            padding: 36px 28px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .status-icon-wrapper {
+            width: 84px;
+            height: 84px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            margin-bottom: 4px;
+            transition: all 0.3s ease;
+        }
+
+        /* Estados dinámicos */
+        .state-disponible .status-icon-wrapper {
+            background: var(--emerald-bg);
+            border: 2px solid var(--emerald);
+            box-shadow: 0 0 35px rgba(16, 185, 129, 0.4);
+        }
+        .state-disponible {
+            border-color: var(--emerald-border);
+            background: linear-gradient(180deg, rgba(16, 185, 129, 0.08) 0%, rgba(14, 20, 36, 0.8) 100%);
+        }
+
+        .state-no-disponible .status-icon-wrapper {
+            background: var(--amber-bg);
+            border: 2px solid var(--amber);
+            box-shadow: 0 0 30px rgba(245, 158, 11, 0.3);
+        }
+        .state-no-disponible {
+            border-color: var(--amber-border);
+            background: linear-gradient(180deg, rgba(245, 158, 11, 0.05) 0%, rgba(14, 20, 36, 0.8) 100%);
+        }
+
+        .state-error .status-icon-wrapper {
+            background: var(--rose-bg);
+            border: 2px solid var(--rose);
+            box-shadow: 0 0 30px rgba(244, 63, 94, 0.3);
+        }
+        .state-error {
+            border-color: var(--rose-border);
+            background: linear-gradient(180deg, rgba(244, 63, 94, 0.06) 0%, rgba(14, 20, 36, 0.8) 100%);
+        }
+
+        .status-title {
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+        .state-disponible .status-title { color: #34d399; }
+        .state-no-disponible .status-title { color: #fbbf24; }
+        .state-error .status-title { color: #fb7185; }
+
+        .status-desc {
+            max-width: 580px;
+            color: var(--text-secondary);
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+        .cta-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--trendy-pink);
+            color: #ffffff;
+            text-decoration: none;
+            padding: 12px 28px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 700;
+            box-shadow: 0 4px 20px rgba(236, 72, 153, 0.4);
+            margin-top: 6px;
+            transition: all 0.2s ease;
+        }
+        .cta-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 26px rgba(236, 72, 153, 0.6);
+        }
+
+        /* Timing Bar */
+        .timing-bar {
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            font-size: 13px;
+        }
+        .timing-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .timing-label {
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+        .timing-val {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        .auto-refresh-timer {
+            color: var(--cyan);
+            font-size: 12px;
+        }
+
+        /* Info Grid */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+        }
+        .info-card {
+            padding: 18px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .info-card-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+        }
+        .info-card-val {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .info-card-sub {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* History Section */
+        .history-card {
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--card-border);
+            padding-bottom: 14px;
+        }
+        .history-title {
+            font-size: 16px;
+            font-weight: 700;
+        }
+        .history-count {
+            font-size: 12px;
+            color: var(--text-muted);
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 440px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+        .history-list::-webkit-scrollbar {
+            width: 6px;
+        }
+        .history-list::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+
+        .history-entry {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 8px;
+            border-left: 3px solid #334155;
+            font-size: 13px;
+            transition: background 0.15s ease;
+        }
+        .history-entry:hover {
+            background: rgba(255, 255, 255, 0.04);
+        }
+        .history-entry.entry-disponible {
+            border-left-color: var(--emerald);
+            background: rgba(16, 185, 129, 0.06);
+        }
+        .history-entry.entry-error {
+            border-left-color: var(--rose);
+            background: rgba(244, 63, 94, 0.06);
+        }
+        .history-entry.entry-no-disponible {
+            border-left-color: var(--amber);
+        }
+
+        .entry-time {
+            color: var(--text-muted);
+            font-size: 12px;
+            white-space: nowrap;
+            flex-shrink: 0;
+            padding-top: 1px;
+        }
+        .entry-msg {
+            color: #cbd5e1;
+            flex: 1;
+            word-break: break-word;
+            line-height: 1.4;
+        }
+        .entry-empty {
+            text-align: center;
+            padding: 30px;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 16px 0;
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+        .footer a {
+            color: var(--trendy-pink);
+            text-decoration: none;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 600px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .header-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+            .timing-bar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .status-title {
+                font-size: 22px;
+            }
+            .history-entry {
+                flex-direction: column;
+                gap: 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="ambient-glow glow-1"></div>
+    <div class="ambient-glow glow-2"></div>
+    <div class="grid-overlay"></div>
+
+    <div class="app-container">
+        <!-- Header -->
+        <header class="glass-card header">
+            <div class="brand">
+                <div class="radar-badge">
+                    <span class="radar-point"></span>
+                    <span class="radar-pulse"></span>
+                </div>
+                <div>
+                    <h1 class="brand-title">TRENDY <span class="gradient-text">RADAR</span></h1>
+                    <span class="brand-sub">Monitor VTEX de Calendario de Adviento</span>
+                </div>
+            </div>
+
+            <div class="header-actions">
+                <span class="live-tag">
+                    <span class="live-dot"></span>
+                    <span>SENTINEL ACTIVO</span>
+                </span>
+                <button id="refreshBtn" class="refresh-btn">
+                    <span>🔄</span>
+                    <span>Actualizar</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Indicador Grande de Estado -->
+        <section id="statusHeroCard" class="glass-card status-hero state-no-disponible">
+            <div id="statusIconWrapper" class="status-icon-wrapper">
+                <span id="statusIcon">⏳</span>
+            </div>
+            <h2 id="statusTitle" class="status-title">Verificando estado...</h2>
+            <p id="statusDesc" class="status-desc">Cargando la información más reciente desde GitHub Actions...</p>
+            <a href="https://www.maquillajetrendyshop.com" target="_blank" rel="noopener" id="statusCta" class="cta-btn">
+                <span>Ver tienda Trendy Shop</span>
+                <span>&rarr;</span>
+            </a>
+        </section>
+
+        <!-- Barra de Tiempo (Hora Colombia) -->
+        <div class="glass-card timing-bar">
+            <div class="timing-item">
+                <span class="timing-label">Última revisión:</span>
+                <span id="colombiaTimeDisplay" class="timing-val font-mono">--:--</span>
+            </div>
+            <div class="timing-item auto-refresh-timer">
+                <span>⏱️ Próxima actualización en: <strong id="countdownSec" class="font-mono">60s</strong></span>
+            </div>
+        </div>
+
+        <!-- Ficha de Datos del Monitor -->
+        <div class="info-grid">
+            <div class="glass-card info-card">
+                <span class="info-card-label">Tienda Monitoreada</span>
+                <span class="info-card-val">Trendy Shop</span>
+                <span class="info-card-sub font-mono">maquillajetrendyshop.com</span>
+            </div>
+            <div class="glass-card info-card">
+                <span class="info-card-label">Frecuencia de Escaneo</span>
+                <span class="info-card-val">Cada 10 minutos</span>
+                <span class="info-card-sub">Ejecutado por GitHub Actions</span>
+            </div>
+            <div class="glass-card info-card">
+                <span class="info-card-label">Términos Vigilados</span>
+                <span class="info-card-val">adviento</span>
+                <span class="info-card-sub font-mono">calendario de adviento</span>
+            </div>
+            <div class="glass-card info-card">
+                <span class="info-card-label">Alerta Inmediata</span>
+                <span class="info-card-val">Gmail SMTP</span>
+                <span class="info-card-sub">Notificación por correo</span>
+            </div>
+        </div>
+
+        <!-- Historial Reciente de Revisiones -->
+        <section class="glass-card history-card">
+            <div class="history-header">
+                <h3 class="history-title">📋 Historial Reciente de Revisiones</h3>
+                <span id="historyCount" class="history-count font-mono">0 eventos</span>
+            </div>
+            <div id="historyList" class="history-list">
+                <div class="entry-empty">Cargando historial de revisiones...</div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>
+                <strong>Trendy Radar</strong> • Monitoreo automático en la nube con GitHub Actions y GitHub Pages.
+                Tienda oficial: <a href="https://www.maquillajetrendyshop.com" target="_blank" rel="noopener">maquillajetrendyshop.com</a>
+            </p>
+        </footer>
+    </div>
+
+    <!-- Script del Dashboard -->
+    <script>
+        const DATA_URL = "https://raw.githubusercontent.com/juanfierro08/trendy/main/data/estado.json";
+        
+        const statusHeroCard = document.getElementById("statusHeroCard");
+        const statusIconWrapper = document.getElementById("statusIconWrapper");
+        const statusIcon = document.getElementById("statusIcon");
+        const statusTitle = document.getElementById("statusTitle");
+        const statusDesc = document.getElementById("statusDesc");
+        const statusCta = document.getElementById("statusCta");
+        const colombiaTimeDisplay = document.getElementById("colombiaTimeDisplay");
+        const countdownSec = document.getElementById("countdownSec");
+        const historyCount = document.getElementById("historyCount");
+        const historyList = document.getElementById("historyList");
+        const refreshBtn = document.getElementById("refreshBtn");
+
+        let countdown = 60;
+
+        // Formateador a Hora de Colombia (America/Bogota)
+        function formatColombiaTime(isoString) {
+            if (!isoString) return "Aún no ejecutado";
+            try {
+                const date = new Date(isoString);
+                return new Intl.DateTimeFormat("es-CO", {
+                    timeZone: "America/Bogota",
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit",
+                    hour12: true
+                }).format(date) + " (Hora Col)";
+            } catch (e) {
+                return isoString;
+            }
+        }
+
+        function formatRelativeAgo(isoString) {
+            if (!isoString) return "";
+            try {
+                const diffMs = Date.now() - new Date(isoString).getTime();
+                const diffSecs = Math.floor(diffMs / 1000);
+                if (diffSecs < 60) return `(hace ${diffSecs}s)`;
+                const diffMins = Math.floor(diffSecs / 60);
+                if (diffMins < 60) return `(hace ${diffMins} min)`;
+                const diffHours = Math.floor(diffMins / 60);
+                return `(hace ${diffHours} h)`;
+            } catch (e) {
+                return "";
+            }
+        }
+
+        async function fetchStatus() {
+            try {
+                const cacheBuster = `${DATA_URL}?t=${Date.now()}`;
+                const resp = await fetch(cacheBuster);
+                if (!resp.ok) {
+                    throw new Error(`HTTP ${resp.status}`);
+                }
+                const data = await resp.json();
+                renderData(data);
+            } catch (err) {
+                console.error("Error al obtener estado:", err);
+                renderFallbackError(err);
+            }
+        }
+
+        function renderData(data) {
+            const estado = (data.estado || "no disponible").toLowerCase();
+            const avisado = Boolean(data.avisado);
+            const ultimaRev = data.ultima_revision;
+            const historial = Array.isArray(data.historial) ? data.historial : [];
+
+            // 1. Actualizar Tarjeta Principal
+            statusHeroCard.className = "glass-card status-hero";
+
+            if (estado === "disponible") {
+                statusHeroCard.classList.add("state-disponible");
+                statusIcon.textContent = "🎁";
+                statusTitle.textContent = "¡CALENDARIO DISPONIBLE EN TIENDA!";
+                statusDesc.textContent = "¡Atención! El Calendario de Adviento ha sido detectado en el catálogo de Trendy Shop. Haz clic abajo para comprarlo antes de que se agote.";
+                statusCta.innerHTML = "<span>¡Comprar ahora en Trendy Shop!</span> <span>&rarr;</span>";
+                statusCta.style.display = "inline-flex";
+            } else if (estado === "error") {
+                statusHeroCard.classList.add("state-error");
+                statusIcon.textContent = "⚠️";
+                statusTitle.textContent = "ERROR AL CONSULTAR VTEX";
+                statusDesc.textContent = "Ocurrió un problema temporal de red o respuesta al contactar la tienda en la última revisión. Se reintentará en el próximo ciclo.";
+                statusCta.innerHTML = "<span>Verificar tienda directamente</span> <span>&rarr;</span>";
+                statusCta.style.display = "inline-flex";
+            } else {
+                statusHeroCard.classList.add("state-no-disponible");
+                statusIcon.textContent = "⏳";
+                statusTitle.textContent = "CALENDARIO AÚN NO DISPONIBLE";
+                statusDesc.textContent = "El producto aún no ha sido publicado en el catálogo público de Trendy Shop. El monitor en GitHub Actions revisa cada 10 minutos y te enviará un correo apenas salga.";
+                statusCta.innerHTML = "<span>Ver tienda Trendy Shop</span> <span>&rarr;</span>";
+                statusCta.style.display = "inline-flex";
+            }
+
+            // 2. Fecha y hora en Colombia
+            if (ultimaRev) {
+                const colTime = formatColombiaTime(ultimaRev);
+                const ago = formatRelativeAgo(ultimaRev);
+                colombiaTimeDisplay.textContent = `${colTime} ${ago}`;
+            } else {
+                colombiaTimeDisplay.textContent = "Esperando primera ejecución...";
+            }
+
+            // 3. Historial
+            historyCount.textContent = `${historial.length} eventos`;
+
+            if (historial.length === 0) {
+                historyList.innerHTML = '<div class="entry-empty">Sin eventos registrados aún.</div>';
+            } else {
+                historyList.innerHTML = historial.map(item => {
+                    const timeCol = formatColombiaTime(item.fecha);
+                    const resText = item.resultado || "Revisión realizada.";
+                    
+                    let entryClass = "entry-no-disponible";
+                    if (resText.toLowerCase().includes("disponible") && !resText.toLowerCase().includes("no disponible")) {
+                        entryClass = "entry-disponible";
+                    } else if (resText.toLowerCase().includes("error") || resText.toLowerCase().includes("falló")) {
+                        entryClass = "entry-error";
+                    }
+
+                    return `
+                        <div class="history-entry ${entryClass}">
+                            <span class="entry-time font-mono">${timeCol}</span>
+                            <span class="entry-msg">${escapeHtml(resText)}</span>
+                        </div>
+                    `;
+                }).join("");
+            }
+        }
+
+        function renderFallbackError(err) {
+            statusHeroCard.className = "glass-card status-hero state-error";
+            statusIcon.textContent = "📡";
+            statusTitle.textContent = "CARGANDO ESTADO...";
+            statusDesc.textContent = "Consultando data/estado.json en GitHub. Si acabas de subir el repositorio, los datos estarán disponibles en unos segundos.";
+            colombiaTimeDisplay.textContent = "Consultando...";
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement("div");
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Cuenta regresiva de 60 segundos
+        setInterval(() => {
+            countdown--;
+            if (countdown <= 0) {
+                countdown = 60;
+                fetchStatus();
+            }
+            countdownSec.textContent = `${countdown}s`;
+        }, 1000);
+
+        // Botón manual de refresco
+        refreshBtn.addEventListener("click", () => {
+            countdown = 60;
+            countdownSec.textContent = "60s";
+            refreshBtn.disabled = true;
+            refreshBtn.innerHTML = "<span>⏳</span><span>Cargando...</span>";
+            fetchStatus().finally(() => {
+                setTimeout(() => {
+                    refreshBtn.disabled = false;
+                    refreshBtn.innerHTML = "<span>🔄</span><span>Actualizar</span>";
+                }, 800);
+            });
+        });
+
+        // Carga inicial
+        fetchStatus();
+    </script>
+</body>
+</html>
