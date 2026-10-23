@@ -87,3 +87,62 @@ def send_alert(products: List[Dict]):
         print(f"[Notifier] ¡Correo de alerta enviado exitosamente a {recipient}!")
     finally:
         server.quit()
+
+def send_test_email():
+    """Envía un correo de prueba para certificar que las credenciales funcionan."""
+    gmail_user, gmail_app_password, recipient = config.get_email_credentials()
+    now_str = datetime.now().strftime("%d/%m/%Y %I:%M:%S %p")
+    subject = "🔔 [TRENDY RADAR] Correo de prueba exitoso"
+
+    body_plain = (
+        f"TRENDY RADAR - PRUEBA DE CONEXIÓN GMAIL\n\n"
+        f"¡Hola! Tu configuración de correo está funcionando al 100%.\n"
+        f"Remitente: {gmail_user}\n"
+        f"Destinatario: {recipient}\n"
+        f"Fecha: {now_str} UTC\n\n"
+        f"En cuanto el Calendario de Adviento salga en Trendy Shop, recibirás un correo como este con el enlace directo."
+    )
+
+    body_html = f"""
+    <!DOCTYPE html>
+    <html lang="es">
+    <head><meta charset="utf-8"></head>
+    <body style="font-family: Arial, sans-serif; background-color: #f8fafc; color: #1e293b; padding: 20px;">
+        <div style="max-width: 580px; margin: 0 auto; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px;">
+            <div style="border-bottom: 2px solid #10b981; padding-bottom: 12px; margin-bottom: 20px;">
+                <h1 style="color: #059669; margin: 0; font-size: 22px;">✅ ¡Prueba de Alerta Exitosa!</h1>
+                <p style="color: #64748b; margin: 6px 0 0 0; font-size: 13px;">Trendy Radar Sentinel (GitHub Actions)</p>
+            </div>
+            <p style="font-size: 15px; line-height: 1.6;">
+                Este es un correo de comprobación enviado para confirmar que tus credenciales de Gmail SMTP están funcionando correctamente.
+            </p>
+            <div style="background-color: #f1f5f9; padding: 14px 18px; border-radius: 8px; font-size: 13px; line-height: 1.8; color: #334155;">
+                <div><strong>Remitente:</strong> {gmail_user}</div>
+                <div><strong>Destinatario:</strong> {recipient}</div>
+                <div><strong>Fecha:</strong> {now_str} UTC</div>
+                <div><strong>Tienda monitoreada:</strong> maquillajetrendyshop.com</div>
+            </div>
+            <p style="font-size: 14px; color: #475569; margin-top: 18px;">
+                🎉 <strong>¡Todo está listo!</strong> En cuanto se detecte el Calendario de Adviento, te llegará la alerta inmediata con el enlace de compra.
+            </p>
+        </div>
+    </body>
+    </html>
+    """
+
+    msg = MIMEMultipart("alternative")
+    msg["Subject"] = subject
+    msg["From"] = f"Trendy Radar <{gmail_user}>"
+    msg["To"] = recipient
+    msg.attach(MIMEText(body_plain, "plain", "utf-8"))
+    msg.attach(MIMEText(body_html, "html", "utf-8"))
+
+    print(f"[Notifier] Enviando correo de prueba a {recipient}...")
+    server = smtplib.SMTP_SSL("smtp.gmail.com", 465, timeout=20)
+    try:
+        server.login(gmail_user, gmail_app_password)
+        server.sendmail(gmail_user, [recipient], msg.as_string())
+        print(f"[Notifier] ¡Correo de prueba entregado exitosamente a {recipient}!")
+    finally:
+        server.quit()
+

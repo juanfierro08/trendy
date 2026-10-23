@@ -1,6 +1,7 @@
 import json
 import time
 import sys
+import argparse
 from datetime import datetime, timezone
 from typing import Dict, Any, List
 import requests
@@ -28,7 +29,6 @@ def load_estado() -> Dict[str, Any]:
             with open(config.ESTADO_FILE, "r", encoding="utf-8") as f:
                 data = json.load(f)
                 if isinstance(data, dict):
-                    # Asegurar campos requeridos
                     data.setdefault("avisado", False)
                     data.setdefault("ultima_revision", None)
                     data.setdefault("estado", "no disponible")
@@ -82,8 +82,9 @@ def run_single_check():
     now_display = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
 
     print("=" * 60)
-    print(f"🎯 TRENDY RADAR • REVISIÓN [{now_display}]")
+    print(f"🎯 TRENDY RADAR • REVISIÓN DE TIENDA [{now_display}]")
     print(f"Tienda objetivo: {config.VTEX_BASE_URL}")
+    print(f"Términos a consultar ({len(config.MONITORED_TERMS)}): {', '.join(config.MONITORED_TERMS[:5])}...")
     print("=" * 60)
 
     estado = load_estado()
@@ -109,16 +110,23 @@ def run_single_check():
             if resp.status_code in (200, 206):
                 data = resp.json()
                 count = len(data) if isinstance(data, list) else 0
-                print(f"[Respuesta] Código HTTP {resp.status_code} ({elapsed_ms:.1f}ms) - {count} producto(s) encontrado(s)")
+                print(f"[Respuesta] Código HTTP {resp.status_code} ({elapsed_ms:.1f}ms) - {count} producto(s)")
 
                 if count > 0:
                     for item in data:
                         parsed = parse_product(item, term, now_iso)
                         pid = parsed["productId"]
-                        if pid and pid not in seen_ids:
+                        name_lower = parsed["productName"].lower()
+
+                        # Validación para términos amplios como 'preventa' o 'navidad'
+                        is_target = True
+                        if term in ["preventa", "pre venta", "navidad"]:
+                            is_target = any(k in name_lower for k in ["adviento", "calendario", "caja", "24", "regalo", "preventa"])
+
+                        if is_target and pid and pid not in seen_ids:
                             seen_ids.add(pid)
                             detected_products.append(parsed)
-                            print(f"   👉 ID={pid} | {parsed['productName']} | Precio: {parsed['price']} | {parsed['link']}")
+                            print(f"   👉 ¡COINCIDENCIA! ID={pid} | {parsed['productName']} | Precio: {parsed['price']} | {parsed['link']}")
             else:
                 has_network_error = True
                 error_detail = f"VTEX respondió con código HTTP {resp.status_code}"
@@ -136,7 +144,6 @@ def run_single_check():
         historial = []
 
     if has_network_error and not detected_products:
-        # Error de red sin productos
         estado["estado"] = "error"
         resultado_msg = f"Error al consultar VTEX: {error_detail}"
         print(f"\n[Resultado] {resultado_msg}")
@@ -145,7 +152,6 @@ def run_single_check():
             "resultado": resultado_msg
         })
     elif detected_products:
-        # Productos detectados (disponible)
         estado["estado"] = "disponible"
         cant = len(detected_products)
         resultado_msg = f"¡Calendario disponible! Se encontraron {cant} producto(s) en Trendy Shop."
@@ -169,18 +175,120 @@ def run_single_check():
             "resultado": resultado_msg
         })
     else:
-        # 0 productos (no disponible)
         estado["estado"] = "no disponible"
-        resultado_msg = "Revisión completada: 0 productos encontrados. El calendario aún no sale a la venta."
+        resultado_msg = f"Revisión completada ({len(config.MONITORED_TERMS)} términos): 0 productos encontrados. El calendario aún no sale a la venta."
         print(f"\n[Resultado] {resultado_msg}")
         historial.insert(0, {
             "fecha": now_iso,
             "resultado": resultado_msg
         })
 
-    # Guardar estado actualizado con máx 50 registros de historial
     save_estado(estado)
-    print("\n[Fin] Ejecución finalizada correctamente.")
+    print("\n[Fin] Revisión finalizada correctamente.")
+
+def run_test_email():
+    """Ejecuta una prueba directa de envío de correo por Gmail SMTP."""
+    now_iso = datetime.now(timezone.utc).isoformat()
+    now_display = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
+
+    print("=" * 60)
+    print(f"✉️ TRENDY RADAR • PRUEBA DE CORREO SMTP [{now_display}]")
+    print("=" * 60)
+
+    notifier.send_test_email()
+
+    estado = load_estado()
+    estado["ultima_revision"] = now_iso
+    historial = estado.get("historial", [])
+    if not isinstance(historial, list):
+        historial = []
+
+    msg = "Prueba de alerta por correo Gmail ejecutada y entregada con éxito."
+    historial.insert(0, {
+        "fecha": now_iso,
+        "resultado": msg
+    })
+    save_estado(estado)
+    print(f"\n[Éxito] {msg}")
+
+def run_simulate():
+    """Simula la detección del calendario, envía correo y actualiza el estado a disponible."""
+    now_iso = datetime.now(timezone.utc).isoformat()
+    now_display = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
+
+    print("=" * 60)
+    print(f"🎯 TRENDY RADAR • SIMULACIÓN DE DETECCIÓN [{now_display}]")
+    print("=" * 60)
+
+    mock_product = {
+        "productId": f"SIM-{int(time.time())}",
+        "productName": "Calendario de Adviento Trendy 2026 - Edición Mágica 24 Días",
+        "price": 175000.0,
+        "link": f"{config.VTEX_BASE_URL}/calendario-de-adviento-trendy-2026/p",
+        "available": True,
+        "term": "calendario de adviento (SIMULACIÓN)",
+        "detected_at": now_iso
+    }
+
+    print(f"[Simulación] Producto simulado: {mock_product['productName']}")
+    print(f"[Simulación] Enviando alerta real por correo a Gmail...")
+    notifier.send_alert([mock_product])
+
+    estado = load_estado()
+    estado["estado"] = "disponible"
+    estado["avisado"] = True
+    estado["ultima_revision"] = now_iso
+    historial = estado.get("historial", [])
+    if not isinstance(historial, list):
+        historial = []
+
+    msg = "Detección simulada: ¡Calendario de Adviento Trendy 2026! (Correo de alerta despachado)."
+    historial.insert(0, {
+        "fecha": now_iso,
+        "resultado": msg
+    })
+    save_estado(estado)
+    print(f"\n[Éxito] {msg}")
+
+def run_reset():
+    """Reinicia el estado a no disponible y avisado=false para volver a armar el radar."""
+    now_iso = datetime.now(timezone.utc).isoformat()
+    estado = load_estado()
+    estado["estado"] = "no disponible"
+    estado["avisado"] = False
+    estado["ultima_revision"] = now_iso
+    historial = estado.get("historial", [])
+    if not isinstance(historial, list):
+        historial = []
+
+    msg = "Estado reiniciado a 'no disponible' (radar re-armado para nuevas alertas)."
+    historial.insert(0, {
+        "fecha": now_iso,
+        "resultado": msg
+    })
+    save_estado(estado)
+    print(f"[Reset] {msg}")
+
+def main():
+    parser = argparse.ArgumentParser(description="Trendy Radar Sentinel")
+    parser.add_argument(
+        "--action",
+        choices=["check", "test_email", "simulate", "reset"],
+        default="check",
+        help="Acción a ejecutar: check (revisión de tienda), test_email (probar correo), simulate (simular detección), reset (reiniciar estado)"
+    )
+    args = parser.parse_args()
+
+    # Normalizar acción por si viene con texto explicativo
+    act = args.action.lower()
+    if "test" in act or "email" in act:
+        run_test_email()
+    elif "simulat" in act:
+        run_simulate()
+    elif "reset" in act:
+        run_reset()
+    else:
+        run_single_check()
 
 if __name__ == "__main__":
-    run_single_check()
+    main()

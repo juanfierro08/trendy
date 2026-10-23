@@ -11,8 +11,21 @@ ESTADO_FILE = DATA_DIR / "estado.json"
 VTEX_BASE_URL = "https://www.maquillajetrendyshop.com"
 VTEX_SEARCH_ENDPOINT = f"{VTEX_BASE_URL}/api/catalog_system/pub/products/search"
 
-# Términos vigilados
-MONITORED_TERMS = ["adviento", "calendario de adviento"]
+# Términos vigilados (ampliados para máxima cobertura y detección temprana)
+MONITORED_TERMS = [
+    "adviento",
+    "calendario de adviento",
+    "calendario adviento",
+    "calendario",
+    "coalendario",
+    "preventa",
+    "pre venta",
+    "preventa adviento",
+    "caja adviento",
+    "navidad",
+    "calendario trendy",
+    "edicion especial adviento"
+]
 
 # User-Agent estándar
 REQUEST_HEADERS = {

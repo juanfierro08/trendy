@@ -5,6 +5,17 @@ on:
     # Se ejecuta automáticamente cada 10 minutos
     - cron: "*/10 * * * *"
   workflow_dispatch:
+    inputs:
+      action:
+        description: "Selecciona la acción a ejecutar"
+        required: true
+        default: "check"
+        type: choice
+        options:
+          - "check"
+          - "test_email"
+          - "simulate"
+          - "reset"
 
 concurrency:
   group: trendy-radar-sentinel
@@ -33,13 +44,14 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Ejecutar revisión de VTEX
+      - name: Ejecutar revisión de VTEX o Prueba seleccionada
         env:
           GMAIL_USER: ${{ secrets.GMAIL_USER }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
           ALERT_RECIPIENT_EMAIL: ${{ secrets.ALERT_RECIPIENT_EMAIL }}
+          CHOSEN_ACTION: ${{ github.event.inputs.action || 'check' }}
         run: |
-          python monitor.py
+          python monitor.py --action "$CHOSEN_ACTION"
 
       - name: Guardar estado si cambió
         run: |
