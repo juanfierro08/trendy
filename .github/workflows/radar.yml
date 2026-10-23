@@ -1,0 +1,55 @@
+name: Trendy Radar Sentinel
+
+on:
+  schedule:
+    # Se ejecuta automáticamente cada 10 minutos
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: trendy-radar-sentinel
+  cancel-in-progress: false
+
+jobs:
+  check-trendyshop:
+    name: Revisar Calendario de Adviento
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Instalar dependencias
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Ejecutar revisión de VTEX
+        env:
+          GMAIL_USER: ${{ secrets.GMAIL_USER }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          ALERT_RECIPIENT_EMAIL: ${{ secrets.ALERT_RECIPIENT_EMAIL }}
+        run: |
+          python monitor.py
+
+      - name: Guardar estado si cambió
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if [ -n "$(git status --porcelain data/estado.json)" ]; then
+            git add data/estado.json
+            git commit -m "chore(radar): actualizar data/estado.json [skip ci]"
+            git push
+            echo "Estado guardado y enviado al repositorio con éxito."
+          else
+            echo "Sin cambios en data/estado.json. No se requiere commit."
+          fi
