@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trendy Radar • Estado y Pruebas del Calendario de Adviento</title>
+    <title>Trendy Radar • Estado del Calendario de Adviento</title>
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -357,14 +357,15 @@
             font-size: 12px;
         }
 
-        /* Test & Verification Section */
-        .test-section {
+        /* Panel de Pruebas Directas */
+        .direct-test-section {
             padding: 24px;
             display: flex;
             flex-direction: column;
             gap: 18px;
-            border-color: rgba(139, 92, 246, 0.35);
-            background: rgba(139, 92, 246, 0.04);
+            border-color: rgba(236, 72, 153, 0.35);
+            background: rgba(236, 72, 153, 0.04);
+            box-shadow: 0 0 35px rgba(236, 72, 153, 0.08);
         }
         .section-header {
             display: flex;
@@ -381,11 +382,12 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            color: #ffffff;
         }
         .test-badge {
-            background: rgba(139, 92, 246, 0.18);
-            border: 1px solid rgba(139, 92, 246, 0.4);
-            color: #c4b5fd;
+            background: rgba(236, 72, 153, 0.15);
+            border: 1px solid rgba(236, 72, 153, 0.4);
+            color: #f472b6;
             font-size: 11px;
             font-weight: 700;
             padding: 3px 10px;
@@ -393,76 +395,103 @@
             text-transform: uppercase;
         }
 
-        .test-grid {
+        .test-buttons-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 16px;
-        }
-        .test-box {
-            background: rgba(0, 0, 0, 0.25);
-            border: 1px solid var(--card-border);
-            border-radius: 12px;
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .test-box-title {
-            font-size: 14px;
-            font-weight: 700;
-            color: #ffffff;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .test-box-desc {
-            font-size: 12px;
-            color: var(--text-secondary);
-            line-height: 1.45;
-            flex: 1;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 14px;
         }
 
-        .btn-test {
-            display: inline-flex;
+        .btn-direct {
+            display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             gap: 6px;
-            padding: 9px 16px;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 700;
+            padding: 18px 16px;
+            border-radius: 12px;
             font-family: var(--font-main);
+            font-size: 14px;
+            font-weight: 700;
             cursor: pointer;
-            text-decoration: none;
-            transition: all 0.2s ease;
             border: none;
-            width: 100%;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            position: relative;
         }
-        .btn-email-test {
+        .btn-direct:active {
+            transform: scale(0.98);
+        }
+        .btn-direct-sub {
+            font-size: 11px;
+            font-weight: 500;
+            opacity: 0.85;
+        }
+
+        .btn-test-email {
             background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
             color: #ffffff;
-            box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3);
+            border: 1px solid rgba(56, 189, 248, 0.4);
         }
-        .btn-email-test:hover {
+        .btn-test-email:hover {
             background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%);
-            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(56, 189, 248, 0.4);
+            transform: translateY(-2px);
         }
-        .btn-sim-test {
-            background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+
+        .btn-test-simulate {
+            background: linear-gradient(135deg, #ec4899 0%, #be185d 100%);
             color: #ffffff;
-            box-shadow: 0 4px 14px rgba(236, 72, 153, 0.3);
+            border: 1px solid rgba(244, 114, 182, 0.4);
         }
-        .btn-sim-test:hover {
+        .btn-test-simulate:hover {
             background: linear-gradient(135deg, #f472b6 0%, #ec4899 100%);
-            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(236, 72, 153, 0.4);
+            transform: translateY(-2px);
         }
-        .btn-toggle-sim {
-            background: rgba(255, 255, 255, 0.08);
-            color: var(--text-primary);
+
+        .btn-test-reset {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-secondary);
             border: 1px solid var(--card-border);
         }
-        .btn-toggle-sim:hover {
-            background: rgba(255, 255, 255, 0.15);
+        .btn-test-reset:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: var(--text-primary);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Notification Banner / Feedback */
+        .feedback-banner {
+            display: none;
+            padding: 14px 18px;
+            border-radius: 10px;
+            font-size: 13px;
+            line-height: 1.5;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .feedback-success {
+            display: block;
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            color: #a7f3d0;
+        }
+        .feedback-error {
+            display: block;
+            background: rgba(244, 63, 94, 0.15);
+            border: 1px solid rgba(244, 63, 94, 0.4);
+            color: #fecdd3;
+        }
+        .feedback-info {
+            display: block;
+            background: rgba(6, 182, 212, 0.15);
+            border: 1px solid rgba(6, 182, 212, 0.4);
+            color: #bae6fd;
         }
 
         /* Keywords Section */
@@ -585,6 +614,77 @@
             font-size: 14px;
         }
 
+        /* Modal Token */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(8px);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal-content {
+            background: #0f172a;
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            max-width: 500px;
+            width: 100%;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+        }
+        .modal-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: #ffffff;
+        }
+        .modal-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+        .modal-input {
+            width: 100%;
+            background: #070a12;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            padding: 10px 14px;
+            color: #ffffff;
+            font-family: var(--font-mono);
+            font-size: 13px;
+            outline: none;
+        }
+        .modal-input:focus {
+            border-color: var(--cyan);
+        }
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        .modal-btn {
+            padding: 9px 18px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            font-family: var(--font-main);
+            cursor: pointer;
+            border: none;
+        }
+        .modal-btn-cancel {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-secondary);
+        }
+        .modal-btn-confirm {
+            background: var(--trendy-pink);
+            color: #ffffff;
+        }
+
         /* Footer */
         .footer {
             text-align: center;
@@ -682,59 +782,37 @@
             </div>
         </div>
 
-        <!-- ZONA DE PRUEBAS Y DIAGNÓSTICO -->
-        <section class="glass-card test-section">
+        <!-- PANEL DE BOTONES DE PRUEBA DIRECTA (SIN SALIR A GITHUB) -->
+        <section class="glass-card direct-test-section">
             <div class="section-header">
-                <h3 class="section-title">🧪 Zona de Pruebas y Verificación de Correo</h3>
-                <span class="test-badge">Diagnóstico en Tiempo Real</span>
+                <h3 class="section-title">
+                    <span>⚡</span>
+                    <span>Botones de Prueba Inmediata</span>
+                </h3>
+                <span class="test-badge">Pruebas en 1 Clic</span>
             </div>
 
-            <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.5;">
-                Usa estas opciones para comprobar que tu correo recibe las alertas y simular cómo reacciona el sistema cuando el Calendario de Adviento salga a la venta:
-            </p>
+            <!-- Banner de resultado de la prueba -->
+            <div id="feedbackBanner" class="feedback-banner"></div>
 
-            <div class="test-grid">
-                <!-- Opción 1: Enviar correo de prueba real -->
-                <div class="test-box">
-                    <div class="test-box-title">
-                        <span>✉️</span>
-                        <span>Probar Correo en tu Gmail</span>
-                    </div>
-                    <div class="test-box-desc">
-                        Abre GitHub Actions y selecciona <strong>"test_email"</strong> para que el servidor envíe un correo real de prueba a tu bandeja de entrada vía Gmail SMTP.
-                    </div>
-                    <a href="https://github.com/juanfierro08/trendy/actions/workflows/radar.yml" target="_blank" rel="noopener" class="btn-test btn-email-test">
-                        <span>Lanzar prueba en GitHub &rarr;</span>
-                    </a>
-                </div>
+            <div class="test-buttons-grid">
+                <!-- Botón 1: Enviar correo de prueba -->
+                <button id="btnEmailTest" class="btn-direct btn-test-email">
+                    <span>✉️ Enviar correo de prueba</span>
+                    <span class="btn-direct-sub">Comprueba que el correo llegue a tu Gmail</span>
+                </button>
 
-                <!-- Opción 2: Simulación completa con correo -->
-                <div class="test-box">
-                    <div class="test-box-title">
-                        <span>🎯</span>
-                        <span>Simular Detección Real</span>
-                    </div>
-                    <div class="test-box-desc">
-                        En GitHub Actions elige <strong>"simulate"</strong>. Genera el Calendario de Adviento, envía la alerta real por correo a tu Gmail y cambia este panel a verde.
-                    </div>
-                    <a href="https://github.com/juanfierro08/trendy/actions/workflows/radar.yml" target="_blank" rel="noopener" class="btn-test btn-sim-test">
-                        <span>Simular en GitHub Actions &rarr;</span>
-                    </a>
-                </div>
+                <!-- Botón 2: Simular detección -->
+                <button id="btnSimulateTest" class="btn-direct btn-test-simulate">
+                    <span>🎯 Simular detección y alerta</span>
+                    <span class="btn-direct-sub">Genera el calendario y envía correo con foto</span>
+                </button>
 
-                <!-- Opción 3: Previsualizar en pantalla -->
-                <div class="test-box">
-                    <div class="test-box-title">
-                        <span>👁️</span>
-                        <span>Previsualizar Estado Verde</span>
-                    </div>
-                    <div class="test-box-desc">
-                        Alterna visualmente la apariencia del panel para ver el diseño y escuchar el sonido de campana de alerta sin esperar al servidor.
-                    </div>
-                    <button id="toggleSimScreenBtn" class="btn-test btn-toggle-sim">
-                        <span>Simular en esta pantalla</span>
-                    </button>
-                </div>
+                <!-- Botón 3: Reiniciar radar -->
+                <button id="btnResetState" class="btn-direct btn-test-reset">
+                    <span>🔄 Reiniciar radar</span>
+                    <span class="btn-direct-sub">Vuelve a poner estado en "no disponible"</span>
+                </button>
             </div>
         </section>
 
@@ -811,9 +889,31 @@
         </footer>
     </div>
 
-    <!-- Script del Dashboard -->
+    <!-- Modal para configurar Token en GitHub Pages (solo la primera vez) -->
+    <div id="tokenModal" class="modal-overlay">
+        <div class="modal-content">
+            <h3 class="modal-title">🔑 Configurar Envío Directo</h3>
+            <p class="modal-desc">
+                Para que estos botones disparen el correo directamente desde esta página pública sin abrir GitHub, pega tu <strong>GitHub Personal Access Token</strong> (con permiso de <code>workflow</code> o <code>repo</code>).
+                <br><br>
+                Solo te lo pedirá esta única vez y quedará guardado localmente en tu propio navegador.
+            </p>
+            <input type="password" id="modalTokenInput" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" class="modal-input">
+            <div style="font-size: 11px; color: #94a3b8;">
+                👉 <a href="https://github.com/settings/tokens/new?scopes=repo,workflow&description=TrendyRadarButton" target="_blank" style="color: #38bdf8;">Crear token en GitHub en 10 segundos</a>
+            </div>
+            <div class="modal-actions">
+                <button id="modalBtnCancel" class="modal-btn modal-btn-cancel">Cancelar</button>
+                <button id="modalBtnConfirm" class="modal-btn modal-btn-confirm">Guardar y Ejecutar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script del Dashboard y Disparador de Pruebas -->
     <script>
         const DATA_URL = "https://raw.githubusercontent.com/juanfierro08/trendy/main/data/estado.json";
+        const GITHUB_REPO = "juanfierro08/trendy";
+        const WORKFLOW_ID = "radar.yml";
         
         const statusHeroCard = document.getElementById("statusHeroCard");
         const statusIconWrapper = document.getElementById("statusIconWrapper");
@@ -828,12 +928,20 @@
         const refreshBtn = document.getElementById("refreshBtn");
         const soundBtn = document.getElementById("soundBtn");
         const soundIcon = document.getElementById("soundIcon");
-        const toggleSimScreenBtn = document.getElementById("toggleSimScreenBtn");
+
+        const btnEmailTest = document.getElementById("btnEmailTest");
+        const btnSimulateTest = document.getElementById("btnSimulateTest");
+        const btnResetState = document.getElementById("btnResetState");
+        const feedbackBanner = document.getElementById("feedbackBanner");
+
+        const tokenModal = document.getElementById("tokenModal");
+        const modalTokenInput = document.getElementById("modalTokenInput");
+        const modalBtnCancel = document.getElementById("modalBtnCancel");
+        const modalBtnConfirm = document.getElementById("modalBtnConfirm");
 
         let countdown = 60;
         let soundEnabled = true;
-        let isSimulatedOnScreen = false;
-        let lastFetchedData = null;
+        let pendingAction = null;
 
         // Sonido sintetizado de campana / sonar
         function playAlertSound() {
@@ -916,7 +1024,6 @@
         }
 
         async function fetchStatus() {
-            if (isSimulatedOnScreen) return;
             try {
                 const cacheBuster = `${DATA_URL}?t=${Date.now()}`;
                 const resp = await fetch(cacheBuster);
@@ -924,11 +1031,9 @@
                     throw new Error(`HTTP ${resp.status}`);
                 }
                 const data = await resp.json();
-                lastFetchedData = data;
                 renderData(data);
             } catch (err) {
                 console.error("Error al obtener estado:", err);
-                renderFallbackError(err);
             }
         }
 
@@ -998,45 +1103,154 @@
             }
         }
 
-        function renderFallbackError(err) {
-            statusHeroCard.className = "glass-card status-hero state-no-disponible";
-            statusIcon.textContent = "⏳";
-            statusTitle.textContent = "CONECTANDO CON GITHUB...";
-            statusDesc.textContent = "Sincronizando estado más reciente de Trendy Radar...";
-            colombiaTimeDisplay.textContent = "Consultando...";
-        }
-
         function escapeHtml(text) {
             const div = document.createElement("div");
             div.textContent = text;
             return div.innerHTML;
         }
 
-        // Simulación en pantalla
-        toggleSimScreenBtn.addEventListener("click", () => {
-            isSimulatedOnScreen = !isSimulatedOnScreen;
-            if (isSimulatedOnScreen) {
-                toggleSimScreenBtn.innerHTML = "<span>↩️ Restaurar estado real</span>";
-                playAlertSound();
-                renderData({
-                    estado: "disponible",
-                    avisado: true,
-                    ultima_revision: new Date().toISOString(),
-                    historial: [
-                        {
-                            fecha: new Date().toISOString(),
-                            resultado: "¡PRUEBA EN PANTALLA! Calendario de Adviento Trendy 2026 detectado en catálogo."
-                        },
-                        ...(lastFetchedData && lastFetchedData.historial ? lastFetchedData.historial : [])
-                    ]
-                });
+        function showFeedback(msg, type = "info") {
+            feedbackBanner.className = `feedback-banner feedback-${type}`;
+            feedbackBanner.innerHTML = msg;
+            feedbackBanner.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        }
+
+        // =========================================================================
+        // MOTOR DE EJECUCIÓN DIRECTA (SIN REDIRIGIR A GITHUB)
+        // =========================================================================
+        async function triggerDirectAction(actionName) {
+            const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+
+            if (isLocal) {
+                // Servidor local Flask
+                const endpoint = actionName === "test_email" ? "/api/test-email" :
+                                 actionName === "simulate" ? "/api/simulate" : "/api/reset";
+                const resp = await fetch(endpoint, { method: "POST" });
+                const json = await resp.json();
+                if (!json.success && json.error) throw new Error(json.error);
+                return json;
+            }
+
+            // GitHub Pages: Disparar workflow mediante GitHub Actions API en segundo plano
+            let token = localStorage.getItem("trendy_gh_token");
+            if (!token) {
+                pendingAction = actionName;
+                tokenModal.style.display = "flex";
+                modalTokenInput.focus();
+                throw new Error("WAITING_TOKEN");
+            }
+
+            const apiUrl = `https://api.github.com/repos/${GITHUB_REPO}/actions/workflows/${WORKFLOW_ID}/dispatches`;
+            const resp = await fetch(apiUrl, {
+                method: "POST",
+                headers: {
+                    "Accept": "application/vnd.github.v3+json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    ref: "main",
+                    inputs: { action: actionName }
+                })
+            });
+
+            if (resp.status === 204) {
+                return { success: true, message: "¡Acción ejecutada con éxito en GitHub Actions!" };
             } else {
-                toggleSimScreenBtn.innerHTML = "<span>Simular en esta pantalla</span>";
-                if (lastFetchedData) {
-                    renderData(lastFetchedData);
-                } else {
-                    fetchStatus();
+                const errJson = await resp.json().catch(() => ({}));
+                if (resp.status === 401 || resp.status === 403) {
+                    localStorage.removeItem("trendy_gh_token");
+                    throw new Error("El token de GitHub expiró o no tiene permiso de 'workflow' / 'repo'. Por favor vuelve a ingresarlo.");
                 }
+                throw new Error(errJson.message || `Error del servidor HTTP ${resp.status}`);
+            }
+        }
+
+        async function handleActionClick(btn, actionName, labelProgress, labelSuccess, messageSuccess) {
+            const origHtml = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = `<span>⏳</span> <span>${labelProgress}</span>`;
+            showFeedback(`⏳ Ejecutando: ${labelProgress}...`, "info");
+
+            try {
+                await triggerDirectAction(actionName);
+                btn.innerHTML = `<span>✅</span> <span>${labelSuccess}</span>`;
+                showFeedback(messageSuccess, "success");
+                playAlertSound();
+
+                // Recargar estado tras 4 segundos para reflejar cambios
+                setTimeout(fetchStatus, 4000);
+            } catch (err) {
+                if (err.message === "WAITING_TOKEN") {
+                    btn.disabled = false;
+                    btn.innerHTML = origHtml;
+                    return;
+                }
+                btn.innerHTML = `<span>❌</span> <span>Error</span>`;
+                showFeedback(`❌ ${err.message}`, "error");
+            } finally {
+                setTimeout(() => {
+                    btn.disabled = false;
+                    btn.innerHTML = origHtml;
+                }, 5000);
+            }
+        }
+
+        // Listener 1: Enviar correo de prueba
+        btnEmailTest.addEventListener("click", () => {
+            handleActionClick(
+                btnEmailTest,
+                "test_email",
+                "Enviando correo a tu Gmail...",
+                "¡Correo Enviado!",
+                "✅ <strong>¡Correo de prueba enviado con éxito!</strong> Revisa tu bandeja de entrada en Gmail."
+            );
+        });
+
+        // Listener 2: Simular detección
+        btnSimulateTest.addEventListener("click", () => {
+            handleActionClick(
+                btnSimulateTest,
+                "simulate",
+                "Simulando y enviando alerta...",
+                "¡Alerta Enviada!",
+                "🎉 <strong>¡Detección simulada con éxito!</strong> Se envió el correo de alerta con foto y precio a tu Gmail."
+            );
+        });
+
+        // Listener 3: Reiniciar radar
+        btnResetState.addEventListener("click", () => {
+            handleActionClick(
+                btnResetState,
+                "reset",
+                "Reiniciando estado...",
+                "¡Radar Reiniciado!",
+                "🔄 <strong>Estado reiniciado a 'no disponible'.</strong> El radar vuelve a estar listo para nuevas alertas."
+            );
+        });
+
+        // Modal de Token Confirmar / Cancelar
+        modalBtnCancel.addEventListener("click", () => {
+            tokenModal.style.display = "none";
+            modalTokenInput.value = "";
+            pendingAction = null;
+        });
+
+        modalBtnConfirm.addEventListener("click", () => {
+            const val = modalTokenInput.value.trim();
+            if (!val) {
+                alert("Por favor ingresa un token válido de GitHub.");
+                return;
+            }
+            localStorage.setItem("trendy_gh_token", val);
+            tokenModal.style.display = "none";
+            modalTokenInput.value = "";
+
+            if (pendingAction) {
+                const act = pendingAction;
+                pendingAction = null;
+                if (act === "test_email") btnEmailTest.click();
+                else if (act === "simulate") btnSimulateTest.click();
+                else if (act === "reset") btnResetState.click();
             }
         });
 
@@ -1056,8 +1270,6 @@
             countdownSec.textContent = "60s";
             refreshBtn.disabled = true;
             refreshBtn.innerHTML = "<span>⏳</span><span>Cargando...</span>";
-            isSimulatedOnScreen = false;
-            toggleSimScreenBtn.innerHTML = "<span>Simular en esta pantalla</span>";
             fetchStatus().finally(() => {
                 setTimeout(() => {
                     refreshBtn.disabled = false;
