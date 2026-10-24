@@ -1,8 +1,12 @@
 {
   "avisado": true,
-  "ultima_revision": "2026-10-24T00:16:28.392471+00:00",
+  "ultima_revision": "2026-10-24T00:17:23.424651+00:00",
   "estado": "disponible",
   "historial": [
+    {
+      "fecha": "2026-10-24T00:17:23.424651+00:00",
+      "resultado": "Detección simulada: ¡Calendario de Adviento Trendy 2026! (Correo de alerta despachado)."
+    },
     {
       "fecha": "2026-10-24T00:16:28.392471+00:00",
       "resultado": "Detección simulada: ¡Calendario de Adviento Trendy 2026! (Correo de alerta despachado)."
