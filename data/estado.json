@@ -1,8 +1,12 @@
 {
-  "avisado": false,
-  "ultima_revision": "2026-10-24T00:02:02.273726+00:00",
-  "estado": "no disponible",
+  "avisado": true,
+  "ultima_revision": "2026-10-24T00:06:44.166693+00:00",
+  "estado": "disponible",
   "historial": [
+    {
+      "fecha": "2026-10-24T00:06:44.166693+00:00",
+      "resultado": "Detección simulada: ¡Calendario de Adviento Trendy 2026! (Correo de alerta despachado)."
+    },
     {
       "fecha": "2026-10-24T00:02:02.273726+00:00",
       "resultado": "Prueba de alerta por correo Gmail ejecutada y entregada con éxito."
