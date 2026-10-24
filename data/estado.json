@@ -1,8 +1,12 @@
 {
   "avisado": false,
-  "ultima_revision": "2026-10-24T00:32:22.414858+00:00",
+  "ultima_revision": "2026-10-24T00:32:42.198423+00:00",
   "estado": "no disponible",
   "historial": [
+    {
+      "fecha": "2026-10-24T00:32:42.198423+00:00",
+      "resultado": "Prueba de alerta por correo Gmail ejecutada y entregada con éxito."
+    },
     {
       "fecha": "2026-10-24T00:32:22.414858+00:00",
       "resultado": "Estado reiniciado a 'no disponible' (radar re-armado para nuevas alertas)."
