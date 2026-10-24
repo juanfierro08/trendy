@@ -1,8 +1,12 @@
 {
   "avisado": false,
-  "ultima_revision": "2026-10-24T00:32:42.198423+00:00",
+  "ultima_revision": "2026-10-24T01:56:54.942881+00:00",
   "estado": "no disponible",
   "historial": [
+    {
+      "fecha": "2026-10-24T01:56:54.942881+00:00",
+      "resultado": "Revisión completada (12 términos): 0 productos encontrados. El calendario aún no sale a la venta."
+    },
     {
       "fecha": "2026-10-24T00:32:42.198423+00:00",
       "resultado": "Prueba de alerta por correo Gmail ejecutada y entregada con éxito."
