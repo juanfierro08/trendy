@@ -24,7 +24,7 @@ concurrency:
 jobs:
   check-trendyshop:
     name: Revisar Calendario de Adviento
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     permissions:
       contents: write
@@ -57,11 +57,16 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          if [ -n "$(git status --porcelain data/estado.json)" ]; then
-            git add data/estado.json
-            git commit -m "chore(radar): actualizar data/estado.json [skip ci]"
-            git push
-            echo "Estado guardado y enviado al repositorio con éxito."
-          else
-            echo "Sin cambios en data/estado.json. No se requiere commit."
+          git add data/estado.json
+          if git diff --cached --quiet; then
+            echo "Sin cambios"
+            exit 0
           fi
+          git commit -m "chore(radar): actualizar data/estado.json [skip ci]"
+          for i in 1 2 3 4 5; do
+            git pull --rebase -X theirs origin main && git push && exit 0
+            sleep $((i*3))
+          done
+          echo "No se pudo guardar el estado"
+          exit 1
+
