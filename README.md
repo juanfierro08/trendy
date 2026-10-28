@@ -37,7 +37,7 @@ Para recibir la alerta por correo cuando aparezca el producto:
 | :--- | :--- |
 | `GMAIL_USER` | Tu correo de Gmail remitente (ej: `tu_correo@gmail.com`). |
 | `GMAIL_APP_PASSWORD` | Tu contraseña de aplicación de Google de 16 letras (sin espacios). |
-| `ALERT_RECIPIENT_EMAIL` | Correo donde recibirás la notificación (puede ser el mismo `GMAIL_USER`). |
+| `ALERT_RECIPIENT_EMAIL` | Correo obligatorio donde recibirás la notificación (sin valores por defecto; ej: `tu_correo@gmail.com`). |
 
 ---
 

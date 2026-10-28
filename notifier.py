@@ -1,9 +1,19 @@
+import os
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from datetime import datetime
 from typing import List, Dict
 import config
+
+def get_recipient_email() -> str:
+    """Obtiene y valida el destinatario exclusivamente desde os.environ['ALERT_RECIPIENT_EMAIL']."""
+    if "ALERT_RECIPIENT_EMAIL" not in os.environ:
+        raise ValueError(
+            "Falta la variable de entorno obligatoria 'ALERT_RECIPIENT_EMAIL'. "
+            "Asegúrate de configurarla en los Secrets de tu repositorio en GitHub sin valores por defecto."
+        )
+    return config.validate_email(os.environ["ALERT_RECIPIENT_EMAIL"], "ALERT_RECIPIENT_EMAIL")
 
 def format_cop_price(val) -> str:
     """Formatea un precio numérico a moneda colombiana (COP)."""
@@ -22,7 +32,10 @@ def send_alert(products: List[Dict]):
         print("[Notifier] No hay productos para notificar.")
         return
 
-    gmail_user, gmail_app_password, recipient = config.get_email_credentials()
+    gmail_user, gmail_app_password, _ = config.get_email_credentials()
+    recipient = get_recipient_email()
+    masked_recipient = config.mask_email(recipient)
+    masked_sender = config.mask_email(gmail_user)
     now_str = datetime.now().strftime("%d/%m/%Y %I:%M:%S %p")
     subject = "¡El calendario de Adviento de Trendy ya salió! 🎁"
 
@@ -79,18 +92,21 @@ def send_alert(products: List[Dict]):
     msg.attach(MIMEText(body_plain, "plain", "utf-8"))
     msg.attach(MIMEText(body_html, "html", "utf-8"))
 
-    print(f"[Notifier] Conectando a smtp.gmail.com:465 (SSL) con usuario {gmail_user}...")
+    print(f"[Notifier] Conectando a smtp.gmail.com:465 (SSL) con usuario {masked_sender}...")
     server = smtplib.SMTP_SSL("smtp.gmail.com", 465, timeout=20)
     try:
         server.login(gmail_user, gmail_app_password)
         server.sendmail(gmail_user, [recipient], msg.as_string())
-        print(f"[Notifier] ¡Correo de alerta enviado exitosamente a {recipient}!")
+        print(f"[Notifier] ¡Correo de alerta enviado exitosamente a {masked_recipient}!")
     finally:
         server.quit()
 
 def send_test_email():
     """Envía un correo de prueba para certificar que las credenciales funcionan."""
-    gmail_user, gmail_app_password, recipient = config.get_email_credentials()
+    gmail_user, gmail_app_password, _ = config.get_email_credentials()
+    recipient = get_recipient_email()
+    masked_recipient = config.mask_email(recipient)
+    masked_sender = config.mask_email(gmail_user)
     now_str = datetime.now().strftime("%d/%m/%Y %I:%M:%S %p")
     subject = "🔔 [TRENDY RADAR] Correo de prueba exitoso"
 
@@ -137,12 +153,12 @@ def send_test_email():
     msg.attach(MIMEText(body_plain, "plain", "utf-8"))
     msg.attach(MIMEText(body_html, "html", "utf-8"))
 
-    print(f"[Notifier] Enviando correo de prueba a {recipient}...")
+    print(f"[Notifier] Enviando correo de prueba a {masked_recipient}...")
     server = smtplib.SMTP_SSL("smtp.gmail.com", 465, timeout=20)
     try:
         server.login(gmail_user, gmail_app_password)
         server.sendmail(gmail_user, [recipient], msg.as_string())
-        print(f"[Notifier] ¡Correo de prueba entregado exitosamente a {recipient}!")
+        print(f"[Notifier] ¡Correo de prueba entregado exitosamente a {masked_recipient}!")
     finally:
         server.quit()
 

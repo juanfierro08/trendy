@@ -36,6 +36,48 @@ REQUEST_HEADERS = {
     "Origin": "https://www.maquillajetrendyshop.com"
 }
 
+import re
+
+EMAIL_REGEX = re.compile(r"^[a-zA-Z0-9_.+-]+@([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$")
+
+def mask_email(email: str) -> str:
+    """Enmascara una dirección de correo para los logs (ej: 'ju***@gmail.com')."""
+    if not email or not isinstance(email, str):
+        return "***"
+    cleaned = email.strip()
+    if "@" not in cleaned:
+        return f"{cleaned[:2]}***" if len(cleaned) >= 2 else "***"
+    user_part, domain_part = cleaned.split("@", 1)
+    if len(user_part) <= 1:
+        masked_user = f"{user_part}***" if user_part else "***"
+    else:
+        masked_user = f"{user_part[:2]}***"
+    return f"{masked_user}@{domain_part}"
+
+def validate_email(email: str, var_name: str = "ALERT_RECIPIENT_EMAIL") -> str:
+    """Valida que el correo no esté vacío, no contenga 'gmmail' y tenga formato válido."""
+    if not email or not isinstance(email, str):
+        raise ValueError(
+            f"Falta la variable de entorno obligatoria '{var_name}' o está vacía. "
+            f"Asegúrate de configurarla en los Secrets de tu repositorio en GitHub."
+        )
+    cleaned = email.strip()
+    if not cleaned:
+        raise ValueError(
+            f"La variable de entorno obligatoria '{var_name}' no puede estar vacía. "
+            f"Asegúrate de configurarla en los Secrets de tu repositorio en GitHub."
+        )
+    if "gmmail" in cleaned.lower():
+        raise ValueError(
+            f"El correo '{mask_email(cleaned)}' configurado en '{var_name}' contiene 'gmmail' en lugar de 'gmail'. "
+            f"Por favor corrige la variable de entorno {var_name}."
+        )
+    if not EMAIL_REGEX.match(cleaned):
+        raise ValueError(
+            f"El correo '{mask_email(cleaned)}' configurado en '{var_name}' no tiene un formato válido (ejemplo esperado: usuario@gmail.com)."
+        )
+    return cleaned
+
 def get_env_var(name: str) -> str:
     """Obtiene una variable de entorno obligatoria o lanza una excepción clara."""
     value = os.environ.get(name, "").strip()
@@ -46,9 +88,18 @@ def get_env_var(name: str) -> str:
         )
     return value
 
+def get_recipient_email() -> str:
+    """Obtiene y valida el destinatario exclusivamente desde os.environ['ALERT_RECIPIENT_EMAIL']."""
+    if "ALERT_RECIPIENT_EMAIL" not in os.environ:
+        raise ValueError(
+            "Falta la variable de entorno obligatoria 'ALERT_RECIPIENT_EMAIL'. "
+            "Asegúrate de configurarla en los Secrets de tu repositorio en GitHub sin valores por defecto."
+        )
+    return validate_email(os.environ["ALERT_RECIPIENT_EMAIL"], "ALERT_RECIPIENT_EMAIL")
+
 def get_email_credentials():
     """Lee y valida las credenciales de correo desde os.environ."""
-    gmail_user = get_env_var("GMAIL_USER")
+    gmail_user = validate_email(get_env_var("GMAIL_USER"), "GMAIL_USER")
     gmail_app_password = get_env_var("GMAIL_APP_PASSWORD").replace(" ", "")
-    recipient = os.environ.get("ALERT_RECIPIENT_EMAIL", "").strip() or gmail_user
+    recipient = get_recipient_email()
     return gmail_user, gmail_app_password, recipient
