@@ -1,8 +1,12 @@
 {
   "avisado": false,
-  "ultima_revision": "2026-10-30T08:58:00.011964+00:00",
+  "ultima_revision": "2026-10-30T15:46:45.534794+00:00",
   "estado": "no disponible",
   "historial": [
+    {
+      "fecha": "2026-10-30T15:46:45.534794+00:00",
+      "resultado": "Revisión completada (12 términos): 0 productos encontrados. El calendario aún no sale a la venta."
+    },
     {
       "fecha": "2026-10-30T08:58:00.011964+00:00",
       "resultado": "Revisión completada (12 términos): 0 productos encontrados. El calendario aún no sale a la venta."
@@ -198,10 +202,6 @@
     {
       "fecha": "2026-10-24T00:10:56.533342+00:00",
       "resultado": "Prueba de alerta por correo Gmail ejecutada y entregada con éxito."
-    },
-    {
-      "fecha": "2026-10-24T00:09:49.682602+00:00",
-      "resultado": "Detección simulada: ¡Calendario de Adviento Trendy 2026! (Correo de alerta despachado)."
     }
   ]
 }
