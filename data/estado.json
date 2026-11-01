@@ -1,8 +1,12 @@
 {
   "avisado": false,
-  "ultima_revision": "2026-11-01T15:29:49.573461+00:00",
+  "ultima_revision": "2026-11-01T19:52:49.524019+00:00",
   "estado": "no disponible",
   "historial": [
+    {
+      "fecha": "2026-11-01T19:52:49.524019+00:00",
+      "resultado": "Revisión completada (12 términos): 0 productos encontrados. El calendario aún no sale a la venta."
+    },
     {
       "fecha": "2026-11-01T15:29:49.573461+00:00",
       "resultado": "Revisión completada (12 términos): 0 productos encontrados. El calendario aún no sale a la venta."
@@ -197,10 +201,6 @@
     },
     {
       "fecha": "2026-10-24T15:45:46.803372+00:00",
-      "resultado": "Revisión completada (12 términos): 0 productos encontrados. El calendario aún no sale a la venta."
-    },
-    {
-      "fecha": "2026-10-24T11:57:56.209924+00:00",
       "resultado": "Revisión completada (12 términos): 0 productos encontrados. El calendario aún no sale a la venta."
     }
   ]
