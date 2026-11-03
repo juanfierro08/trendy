@@ -1,8 +1,12 @@
 {
   "avisado": false,
-  "ultima_revision": "2026-11-03T09:56:46.074451+00:00",
+  "ultima_revision": "2026-11-03T17:38:10.727367+00:00",
   "estado": "no disponible",
   "historial": [
+    {
+      "fecha": "2026-11-03T17:38:10.727367+00:00",
+      "resultado": "Revisión completada (12 términos): 0 productos encontrados. El calendario aún no sale a la venta."
+    },
     {
       "fecha": "2026-11-03T09:56:46.074451+00:00",
       "resultado": "Revisión completada (12 términos): 0 productos encontrados. El calendario aún no sale a la venta."
@@ -197,10 +201,6 @@
     },
     {
       "fecha": "2026-10-25T01:49:12.493449+00:00",
-      "resultado": "Prueba de alerta por correo Gmail ejecutada y entregada con éxito."
-    },
-    {
-      "fecha": "2026-10-25T01:45:35.017588+00:00",
       "resultado": "Prueba de alerta por correo Gmail ejecutada y entregada con éxito."
     }
   ]
