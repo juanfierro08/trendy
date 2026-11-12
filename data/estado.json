@@ -1,8 +1,12 @@
 {
   "avisado": true,
-  "ultima_revision": "2026-11-12T00:29:53.077839+00:00",
+  "ultima_revision": "2026-11-12T07:38:56.862368+00:00",
   "estado": "disponible",
   "historial": [
+    {
+      "fecha": "2026-11-12T07:38:56.862368+00:00",
+      "resultado": "¡Calendario disponible! Se encontraron 1 producto(s) en Trendy Shop. (Ya se había notificado previamente)."
+    },
     {
       "fecha": "2026-11-12T00:29:53.077839+00:00",
       "resultado": "¡Calendario disponible! Se encontraron 1 producto(s) en Trendy Shop. (Ya se había notificado previamente)."
@@ -197,10 +201,6 @@
     },
     {
       "fecha": "2026-10-31T19:44:30.272070+00:00",
-      "resultado": "Revisión completada (12 términos): 0 productos encontrados. El calendario aún no sale a la venta."
-    },
-    {
-      "fecha": "2026-10-31T15:50:54.581772+00:00",
       "resultado": "Revisión completada (12 términos): 0 productos encontrados. El calendario aún no sale a la venta."
     }
   ]
