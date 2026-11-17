@@ -1,8 +1,12 @@
 {
   "avisado": true,
-  "ultima_revision": "2026-11-17T06:47:36.773894+00:00",
+  "ultima_revision": "2026-11-17T16:30:23.648714+00:00",
   "estado": "disponible",
   "historial": [
+    {
+      "fecha": "2026-11-17T16:30:23.648714+00:00",
+      "resultado": "¡Calendario disponible! Se encontraron 1 producto(s) en Trendy Shop. (Ya se había notificado previamente)."
+    },
     {
       "fecha": "2026-11-17T06:47:36.773894+00:00",
       "resultado": "¡Calendario disponible! Se encontraron 1 producto(s) en Trendy Shop. (Ya se había notificado previamente)."
@@ -198,10 +202,6 @@
     {
       "fecha": "2026-11-05T07:00:32.903025+00:00",
       "resultado": "Detección simulada: ¡Calendario de Adviento Trendy 2026! (Correo de alerta despachado)."
-    },
-    {
-      "fecha": "2026-11-05T06:59:05.987597+00:00",
-      "resultado": "Estado reiniciado a 'no disponible' (radar re-armado para nuevas alertas)."
     }
   ]
 }
